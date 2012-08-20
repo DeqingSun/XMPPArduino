@@ -2,6 +2,7 @@ Introduction
 ------------
 
 Arduino-XMPP is a simple write only XMPP client for the Arduino platform.
+It is based on https://github.com/adamvr/XMPPArduino but was changed for our purposes.
 
 Dependencies
 ------------
