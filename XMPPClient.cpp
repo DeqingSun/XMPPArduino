@@ -166,53 +166,70 @@ int XMPPClient::sendPresence() {
 
 
 char * XMPPClient::receiveMessage() {
-	int bufLen = 1000;
-	int msgLen = 100;
-	char buffer[bufLen];
-	char msg[100] = "";
-	int nChar = available();
-	
+	int bufLen = 600;
+	// int msgLen = 100;
+	// char buffer[bufLen];
+	//char recMsg[100] = "";
+  int nChar = available();
+  *recMsg = NULL;
+  *recBuffer = NULL;
+
   if (nChar > 0 && nChar < bufLen) {
-    Serial.println("receiveMessage called");
+    // Serial.println("receiveMessage called");
 		for(int i = 0 ; i < nChar; i++) {
-			buffer[i] = read();
+			recBuffer[i] = read();
     }
 
 		// Terminate the string
-		buffer[nChar] = '\0';
+		recBuffer[nChar - 1] = '\0';
 
-    if(!strlen(buffer)) {
+    if(!strlen(recBuffer)) {
  			//Ignore what we've read if it's an empty string
     }
     else {
  			// Check that what we received is a message
       char tag1[] = "<message";
       char buf2[9];
-      strncpy(buf2, buffer, 8);
+      strncpy(buf2, recBuffer, 8);
       buf2[8] = '\0';
 
       if (strcmp(tag1, buf2) != 0) {
  				// Ignore what we received
         Serial.println("Received something that is not a message");
+        *recBuffer = NULL;
+        *recMsg = NULL;
       }
       else {
+        // Serial.print("The buffer:");
+        // Serial.println(recBuffer);
  				// Parse the message
-        char *startIndex = strstr(buffer, "<body>");
-        startIndex = startIndex + 6;
-        char *ptrMsg;
-        ptrMsg = msg;
+        char *startIndex = strstr(recBuffer, "<body>");
+        if (startIndex != NULL) {
+          Serial.println("Received a message");
+          startIndex = startIndex + 6;
+          char *ptrMsg;
+          ptrMsg = recMsg;
 
-        while (*startIndex != '<') {
-          *ptrMsg = *startIndex;
-          ptrMsg++;
-          startIndex++;
+          while (*startIndex != '<') {
+            *ptrMsg = *startIndex;
+            ptrMsg++;
+            startIndex++;
+          }
+
+          *ptrMsg = '\0';
+          //Serial.println(recMsg);
+          *recBuffer = NULL;
+          return recMsg;
         }
-
-        *ptrMsg = '\0';
+        else {
+          *recBuffer = NULL;
+          *recMsg = NULL;
+          return NULL;
+        }
       }
     }
   }
-  return msg;
+  return recMsg;
 }
 
 int XMPPClient::close() {

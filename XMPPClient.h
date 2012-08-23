@@ -26,6 +26,10 @@ class XMPPClient : public EthernetClient {
 	char *resource;
 	XMPPState state;
 
+	// variables to recive messages
+	char recBuffer[600];
+	char recMsg[100];
+
 
 	int sendTemplate(const prog_char *strTemplate, int fillLen, ...);
 
