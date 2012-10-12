@@ -3,6 +3,7 @@
 
 #include <Base64.h>
 #include <Ethernet.h>
+#include <EthernetClient.h>
 #include <string.h>
 #include <stdarg.h>
 #include <avr/pgmspace.h>
@@ -17,14 +18,18 @@ enum XMPPState {
   WAIT
 };
 
-class XMPPClient {
+class XMPPClient : public EthernetClient {
     private:
-	Client client;
 	char *username;
 	char *server;
 	char *password;
 	char *resource;
 	XMPPState state;
+
+	// variables to recive messages
+	char recBuffer[600];
+	char recMsg[100];
+
 
 	int sendTemplate(const prog_char *strTemplate, int fillLen, ...);
 
@@ -38,14 +43,15 @@ class XMPPClient {
 
 
     public:
-	XMPPClient();
-	XMPPClient(uint8_t *ip, uint16_t port);
 
-	int connect(char *username, char *server, char *resource, char *password);
-	int connect(char *jid, char *password);
+    bool tryConnect;
+
+	int xmppLogin(char *server, char *username, char *password, char *resource, byte *macAddress);
 
 	int sendMessage(char *recipientJid, char *message);
 	int sendPresence();
+	
+	char * receiveMessage();
 
 	int close();
 
