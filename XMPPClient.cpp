@@ -92,18 +92,18 @@ int XMPPClient::xmppLogin(char *server, char *username, char *password, char *re
 
   // start the Ethernet connection
   if(Ethernet.begin(macAddress) == 0) {
-    Serial.println("Failed to configure Ethernet using DHCP");
+    Serial.println(F("Failed to configure Ethernet using DHCP"));
     return 0;
   }
   // give the Ethernet shield a second to initialize:
   delay(1000);
 
   if(connect(server, 5222)) {
-    Serial.print("Conneted to ");
+    Serial.print(F("Conneted to "));
     Serial.println(server);
     state = INIT;
   } else {
-    Serial.print("Failed to connect to ");
+    Serial.print(F("Failed to connect to "));
     Serial.println(server);
   }
 
@@ -195,7 +195,7 @@ char * XMPPClient::receiveMessage() {
 
       if (strcmp(tag1, buf2) != 0) {
  				// Ignore what we received
-        Serial.println("Received something that is not a message");
+        Serial.println(F("Received something that is not a message"));
         *recBuffer = NULL;
         *recMsg = NULL;
       }
@@ -205,7 +205,7 @@ char * XMPPClient::receiveMessage() {
  				// Parse the message
         char *startIndex = strstr(recBuffer, "<body>");
         if (startIndex != NULL) {
-          Serial.println("Received a message");
+          Serial.println(F("Received a message"));
           startIndex = startIndex + 6;
           char *ptrMsg;
           ptrMsg = recMsg;
@@ -253,7 +253,7 @@ int XMPPClient::sendTemplate(const prog_char *temp_P, int fillLen, ...) {
 
 int XMPPClient::stateAction() {
  
-  Serial.print("State = ");
+  Serial.print(F("State = "));
   Serial.println(state);
 
   switch(state) {
@@ -293,7 +293,7 @@ void XMPPClient::processInput() {
 
   if(!connected()) {
     state = WAIT;
-    Serial.println("Lost connection in processInput");
+    Serial.println(F("Lost connection in processInput"));
     return;
   }
 
