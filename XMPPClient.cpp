@@ -95,6 +95,15 @@ int XMPPClient::xmppLogin(char *server, char *username, char *password, char *re
     Serial.println(F("Failed to configure Ethernet using DHCP"));
     return 0;
   }
+  
+  // print local IP address:
+  Serial.print(F("My IP address: "));
+  for (byte thisByte = 0; thisByte < 4; thisByte++) {
+    Serial.print(Ethernet.localIP()[thisByte], DEC);
+    if (thisByte < 3) Serial.print('.'); 
+  }
+  Serial.println();
+  
   // give the Ethernet shield a second to initialize:
   delay(1000);
 
