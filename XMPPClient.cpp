@@ -114,6 +114,7 @@ int XMPPClient::xmppLogin(char *server, char *username, char *password, char *re
   } else {
     Serial.print(F("Failed to connect to "));
     Serial.println(server);
+    return 0;
   }
 
   while(!connected) {
