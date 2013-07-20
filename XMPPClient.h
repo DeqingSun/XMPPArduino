@@ -50,7 +50,9 @@ class XMPPClient : public EthernetClient {
 
 	int sendMessage(char *recipientJid, char *message);
 	int sendPresence();
+	int sendPing();
 	
+	char * receiveMessage(unsigned char *got_resp);
 	char * receiveMessage();
 
 	int close();

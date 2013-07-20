@@ -36,6 +36,12 @@ static const prog_char PROGMEM presence_template[] = "<presence>"
 "<show/>" 
 "</presence>";
 
+static const prog_char PROGMEM ping_template[] = "<iq "
+"to='%s' "
+"id='c2s1' type='get'>" 
+"<ping xmlns='urn:xmpp:ping'/>" 
+"</iq>";
+
 static const prog_char PROGMEM message_template[] = "<message " 
 "to='%s' " 
 "xmlns='jabber:client' " 
@@ -174,8 +180,15 @@ int XMPPClient::sendPresence() {
   sendTemplate(presence_template, 0);
 }
 
+int XMPPClient::sendPing() {
+  sendTemplate(ping_template, strlen(server), server);
+}
 
 char * XMPPClient::receiveMessage() {
+  return receiveMessage(NULL);
+}
+
+char * XMPPClient::receiveMessage(unsigned char *got_resp) {
 	int bufLen = 600;
 	// int msgLen = 100;
 	// char buffer[bufLen];
@@ -206,6 +219,8 @@ char * XMPPClient::receiveMessage() {
       if (strcmp(tag1, buf2) != 0) {
  				// Ignore what we received
         Serial.println(F("Received something that is not a message"));
+        // Serial.println(recBuffer);
+        if (got_resp!=NULL) *got_resp=true;
         *recBuffer = NULL;
         *recMsg = NULL;
       }
